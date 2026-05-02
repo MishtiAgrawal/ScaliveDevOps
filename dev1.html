@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCALive DevOps | Build. Ship. Get Hired.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bg:        #ffffff;
+  --bg2:       #fff5f5;
+  --surface:   #ffffff;
+  --border:    #ffd6d6;
+  --ink:       #1a0a0a;
+  --ink2:      #4a1f1f;
+  --ink3:      #8a5a5a;
+  --accent:    #dc2020;
+  --accent2:   #b91c1c;
+  --accent3:   #ff4444;
+  --green:     #059669;
+  --amber:     #d97706;
+  --grad:      linear-gradient(135deg, #dc2020 0%, #ff4444 100%);
+  --grad-dark: linear-gradient(135deg, #1a0a0a 0%, #3d1515 100%);
+  --grad-warm: linear-gradient(135deg, #fff5f5 0%, #ffe4e4 100%);
+  --shadow-sm: 0 1px 3px rgba(220,32,32,0.08), 0 1px 2px rgba(220,32,32,0.04);
+  --shadow:    0 4px 16px rgba(220,32,32,0.12), 0 2px 6px rgba(220,32,32,0.06);
+  --shadow-lg: 0 20px 60px rgba(220,32,32,0.15), 0 8px 24px rgba(220,32,32,0.08);
+  --radius:    14px;
+  --radius-lg: 24px;
+  --t:         0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.65;
+}
+a { text-decoration:none; color:inherit; }
+img { max-width:100%; display:block; }
+
+/* ─── NOISE ──────────────────────────────────────────────── */
+.noise-overlay {
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  opacity:.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size:180px;
+}
+
+/* ─── CURSOR ─────────────────────────────────────────────── */
+@media (pointer:fine) {
+  body { cursor:none; }
+  .cursor-dot {
+    width:6px; height:6px; background:var(--accent);
+    border-radius:50%; position:fixed; top:0; left:0;
+    pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%);
+    transition:width .15s, height .15s, background .15s;
+  }
+  .cursor-ring {
+    width:36px; height:36px;
+    border:1.5px solid var(--accent);
+    border-radius:50%; position:fixed; top:0; left:0;
+    pointer-events:none; z-index:9998;
+    transform:translate(-50%,-50%);
+    transition:width .2s, height .2s, border-color .2s;
+  }
+  .cursor-dot.active { width:0; height:0; }
+  .cursor-ring.active { width:54px; height:54px; background:rgba(220,32,32,0.07); border-color:var(--accent); }
+}
+
+/* ─── CONTAINER ──────────────────────────────────────────── */
+.container { max-width:1160px; margin:0 auto; padding:0 5%; }
+
+/* ─── NAV ────────────────────────────────────────────────── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  padding:18px 5%;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  transition:background var(--t), box-shadow var(--t), padding var(--t);
+}
+nav.scrolled {
+  padding:12px 5%;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(18px);
+  box-shadow:0 1px 0 var(--border), var(--shadow-sm);
+}
+.logo { display:flex; align-items:center; gap:2px; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:900; }
+.logo-mark { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.logo-text { color:var(--ink); }
+.nav-links { display:flex; list-style:none; gap:32px; }
+.nav-link { font-size:.9rem; font-weight:500; color:var(--ink2); position:relative; padding-bottom:2px; transition:color var(--t); }
+.nav-link::after { content:''; position:absolute; left:0; bottom:0; width:0; height:1.5px; background:var(--accent); transition:width var(--t); }
+.nav-link:hover, .nav-link.active { color:var(--accent); }
+.nav-link:hover::after, .nav-link.active::after { width:100%; }
+.btn-cta {
+  padding:10px 22px; background:var(--ink); color:#fff; border-radius:40px;
+  font-size:.88rem; font-weight:600; display:inline-flex; align-items:center; gap:8px;
+  transition:background var(--t), transform var(--t), box-shadow var(--t);
+}
+.btn-cta:hover { background:var(--accent); transform:translateY(-1px); box-shadow:0 6px 20px rgba(220,32,32,0.4); }
+.hamburger { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:5px; }
+.hamburger span { display:block; width:22px; height:1.5px; background:var(--ink); border-radius:2px; transition:var(--t); }
+.mobile-menu { display:none; position:fixed; inset:0; background:var(--surface); z-index:490; flex-direction:column; align-items:center; justify-content:center; gap:28px; }
+.mobile-menu.open { display:flex; }
+.mob-link { font-family:'Fraunces',serif; font-size:2rem; font-weight:700; color:var(--ink); }
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn-primary {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:13px 28px; background:var(--grad); color:#fff;
+  border-radius:40px; font-weight:600; font-size:.95rem;
+  box-shadow:0 4px 18px rgba(220,32,32,0.35);
+  transition:transform var(--t), box-shadow var(--t);
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(220,32,32,0.5); }
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:13px 28px; background:transparent; color:var(--ink);
+  border:1.5px solid var(--border); border-radius:40px;
+  font-weight:500; font-size:.95rem; transition:border-color var(--t), background var(--t), transform var(--t), color var(--t);
+}
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); background:rgba(220,32,32,0.04); transform:translateY(-1px); }
+
+/* ─── SECTION LABELS & HEADERS ───────────────────────────── */
+.section-label {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:.78rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); border:1px solid rgba(220,32,32,.3);
+  background:rgba(220,32,32,.07); padding:5px 14px; border-radius:40px;
+  margin-bottom:18px;
+}
+.section-h2 {
+  font-family:'Fraunces',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:900;
+  color:var(--ink); text-align:center; line-height:1.1; margin-bottom:16px;
+}
+.section-h2 em { font-style:italic; color:var(--accent); }
+.section-sub { color:var(--ink3); max-width:560px; margin:0 auto 56px; text-align:center; font-size:1rem; }
+
+/* ─── HERO ───────────────────────────────────────────────── */
+.hero {
+  min-height:100vh; display:flex; align-items:center;
+  padding:120px 5% 80px;
+  position:relative; overflow:hidden;
+  background: var(--bg);
+}
+
+/* diagonal red stripe background accent */
+.hero::before {
+  content:'';
+  position:absolute; top:0; right:0;
+  width:55%; height:100%;
+  background: linear-gradient(160deg, #fff5f5 0%, #ffe0e0 60%, #ffd0d0 100%);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+  z-index:0;
+}
+
+#hero-canvas { position:absolute; inset:0; pointer-events:none; z-index:1; }
+.hero-blob {
+  position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:1;
+}
+.blob-1 { width:500px; height:500px; background:rgba(220,32,32,.1); top:-100px; right:-80px; }
+.blob-2 { width:380px; height:380px; background:rgba(255,68,68,.07); bottom:50px; left:-60px; }
+.blob-3 { width:250px; height:250px; background:rgba(220,32,32,.06); top:40%; left:40%; }
+.hero-inner { max-width:1160px; margin:0 auto; width:100%; display:flex; align-items:center; gap:64px; position:relative; z-index:2; }
+.hero-text { flex:1; max-width:540px; }
+.badge-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--surface); border:1px solid var(--border);
+  padding:6px 14px; border-radius:40px; font-size:.82rem; font-weight:500; color:var(--ink2);
+  box-shadow:var(--shadow-sm); margin-bottom:24px;
+}
+.badge-dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(5,150,105,.5);} 50%{box-shadow:0 0 0 6px rgba(5,150,105,0);} }
+.hero-h1 {
+  font-family:'Fraunces',serif; font-size:clamp(3rem,6vw,5rem);
+  font-weight:900; color:var(--ink); line-height:1.0; margin-bottom:22px;
+}
+.hero-h1 em { font-style:italic; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero-sub { color:var(--ink2); font-size:1.08rem; margin-bottom:36px; line-height:1.7; }
+.hero-actions { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:44px; }
+.hero-trust { display:flex; align-items:center; gap:20px; }
+.trust-item { display:flex; flex-direction:column; }
+.trust-item strong { font-family:'Fraunces',serif; font-size:1.6rem; color:var(--accent); line-height:1; }
+.trust-item span { font-size:.78rem; color:var(--ink3); margin-top:2px; }
+.trust-sep { width:1px; height:36px; background:var(--border); }
+
+/* TERMINAL */
+.hero-visual { flex:1; position:relative; min-width:360px; }
+.terminal-card {
+  background:#1a0a0a; border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(220,32,32,0.2); overflow:hidden;
+  transform:rotate(1.5deg);
+  animation:float-card 6s ease-in-out infinite alternate;
+}
+@keyframes float-card { from{transform:rotate(1.5deg) translateY(0);} to{transform:rotate(1.5deg) translateY(-14px);} }
+.terminal-header {
+  display:flex; align-items:center; gap:8px; padding:14px 18px;
+  background:rgba(255,255,255,.04); border-bottom:1px solid rgba(220,32,32,.2);
+}
+.dot { width:12px; height:12px; border-radius:50%; }
+.dot.red { background:#ff5f57; }
+.dot.yellow { background:#febc2e; }
+.dot.green { background:#28c840; }
+.terminal-title { margin-left:auto; color:rgba(255,255,255,.35); font-size:.78rem; font-family:monospace; }
+.terminal-body { padding:20px 22px 24px; min-height:180px; }
+.t-line { font-family:'Courier New',monospace; font-size:.88rem; color:#f5e4e4; display:flex; gap:10px; align-items:center; }
+.t-prompt { color:#ff4444; font-weight:700; }
+.t-cmd { color:#f5e4e4; }
+.t-cursor { width:8px; height:15px; background:#ff4444; display:inline-block; animation:blink .8s infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+.terminal-log { font-family:monospace; font-size:.82rem; padding-top:10px; display:flex; flex-direction:column; gap:5px; }
+.tl { color:rgba(255,255,255,.45); }
+.tl.ok { color:#ff6b6b; }
+.tl.info { color:#fca5a5; }
+.tl.warn { color:#fbbf24; }
+
+/* floating badges */
+.floating-badge {
+  position:absolute; display:flex; align-items:center; gap:8px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:40px; padding:9px 16px; font-size:.82rem; font-weight:600;
+  box-shadow:var(--shadow); white-space:nowrap; color:var(--ink);
+  animation:badge-float 4s ease-in-out infinite alternate;
+}
+.badge-k8s  { top:16px; left:-30px; animation-delay:0s; }
+.badge-deploy { bottom:60px; left:-20px; animation-delay:1.5s; }
+.badge-aws  { top:-10px; right:-10px; animation-delay:0.8s; }
+.floating-badge i { color:var(--accent); }
+.pulse-dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+@keyframes badge-float { from{transform:translateY(0);} to{transform:translateY(-8px);} }
+
+.scroll-indicator {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); z-index:2;
+}
+.scroll-line { width:1px; height:40px; background:var(--border); position:relative; overflow:hidden; }
+.scroll-line::after { content:''; position:absolute; top:-100%; left:0; width:100%; height:100%; background:var(--accent); animation:scroll-down 2s infinite; }
+@keyframes scroll-down { from{top:-100%;} to{top:200%;} }
+
+/* ─── MARQUEE ────────────────────────────────────────────── */
+.marquee-wrap {
+  background:var(--ink); overflow:hidden; padding:14px 0;
+  border-top:2px solid var(--accent); border-bottom:2px solid var(--accent);
+}
+.marquee-track {
+  display:flex; gap:28px; white-space:nowrap;
+  animation:marquee 30s linear infinite;
+  font-size:.85rem; font-weight:600; color:rgba(255,255,255,.75); letter-spacing:.04em;
+}
+.marquee-track span { flex-shrink:0; }
+.dot-sep { color:var(--accent); }
+@keyframes marquee { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+/* ─── VIDEO DEMO ──────────────────────────────────────────── */
+.section-demo { padding:100px 0; background:var(--bg); }
+.section-demo .container { text-align:center; }
+.video-wrapper {
+  margin-top:48px; border-radius:var(--radius-lg); overflow:hidden;
+  box-shadow:var(--shadow-lg); max-width:800px; margin-left:auto; margin-right:auto;
+  border:1px solid var(--border);
+}
+.video-inner {
+  position:relative; background:#1a0a0a; aspect-ratio:16/9;
+  display:flex; align-items:center; justify-content:center;
+}
+.video-grid-lines {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(220,32,32,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220,32,32,.06) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.video-overlay { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:14px; color:#fff; }
+.play-btn {
+  width:72px; height:72px; border-radius:50%;
+  background:var(--grad); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:1.4rem;
+  box-shadow:0 0 0 0 rgba(220,32,32,.4);
+  transition:transform var(--t); animation:ring-pulse 2s infinite;
+}
+.play-btn:hover { transform:scale(1.1); }
+@keyframes ring-pulse { 0%{box-shadow:0 0 0 0 rgba(220,32,32,.5);} 70%{box-shadow:0 0 0 18px rgba(220,32,32,0);} 100%{box-shadow:0 0 0 0 rgba(220,32,32,0);} }
+.video-overlay p { font-size:.9rem; color:rgba(255,255,255,.6); }
+
+/* ─── ABOUT ───────────────────────────────────────────────── */
+.section-about { padding:100px 0; background:var(--bg2); }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.feature-list { list-style:none; display:flex; flex-direction:column; gap:14px; margin:28px 0 36px; }
+.feature-list li { display:flex; align-items:flex-start; gap:12px; color:var(--ink2); font-size:.95rem; }
+.feat-icon { color:var(--accent); margin-top:3px; flex-shrink:0; }
+
+/* stats grid */
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+.stat-box {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:24px 16px 18px; text-align:center;
+  box-shadow:var(--shadow-sm); transition:transform var(--t), box-shadow var(--t);
+}
+.stat-box:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+.highlight-stat { background:var(--ink); color:#fff; }
+.highlight-stat .stat-lab { color:rgba(255,255,255,.6); }
+.stat-val { font-family:'Fraunces',serif; font-size:2.4rem; font-weight:900; color:var(--accent); line-height:1; display:flex; align-items:baseline; justify-content:center; gap:2px; }
+.highlight-stat .stat-val { color:#ff8080; }
+.stat-suf { font-size:1.6rem; }
+.stat-lab { font-size:.78rem; color:var(--ink3); margin-top:6px; font-weight:500; }
+
+/* culture cards */
+.culture-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.culture-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:20px 18px;
+  transition:transform var(--t), box-shadow var(--t), border-color var(--t);
+}
+.culture-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); border-color:rgba(220,32,32,.3); }
+.cc-icon { font-size:1.3rem; color:var(--accent); margin-bottom:10px; }
+.culture-card h4 { font-size:.95rem; font-weight:600; color:var(--ink); margin-bottom:6px; }
+.culture-card p { font-size:.83rem; color:var(--ink3); line-height:1.55; }
+
+/* ─── PROJECTS ────────────────────────────────────────────── */
+.section-projects { padding:100px 0; background:var(--bg); }
+.projects-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.proj-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:32px 28px;
+  position:relative; overflow:hidden;
+  transition:transform var(--t), box-shadow var(--t), border-color var(--t);
+  cursor:pointer;
+}
+.proj-card::before {
+  content:attr(data-index);
+  position:absolute; top:-10px; right:16px;
+  font-family:'Fraunces',serif; font-size:5rem; font-weight:900;
+  color:var(--accent); opacity:.06; line-height:1; transition:opacity var(--t);
+}
+.proj-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(220,32,32,.35); }
+.proj-card:hover::before { opacity:.11; }
+.proj-tag { font-size:.75rem; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:.07em; margin-bottom:12px; }
+.proj-card h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--ink); margin-bottom:10px; line-height:1.25; }
+.proj-card p { font-size:.88rem; color:var(--ink3); line-height:1.6; margin-bottom:20px; }
+.proj-footer { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.tech-pill { background:rgba(220,32,32,.08); color:var(--accent); border:1px solid rgba(220,32,32,.18); border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:600; }
+.proj-arrow { margin-left:auto; color:var(--border); font-size:1.1rem; transition:color var(--t), transform var(--t); }
+.proj-card:hover .proj-arrow { color:var(--accent); transform:translate(3px,-3px); }
+
+/* ─── CURRICULUM TIMELINE ─────────────────────────────────── */
+.section-curriculum { padding:100px 0; background:var(--bg2); }
+.timeline { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:0; position:relative; }
+.timeline::before { content:''; position:absolute; left:32px; top:0; bottom:0; width:1px; background:var(--border); z-index:0; }
+.tl-item {
+  display:flex; gap:28px; position:relative; padding-bottom:40px;
+  opacity:0; transform:translateX(-20px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.tl-item.visible { opacity:1; transform:translateX(0); }
+.tl-num {
+  flex-shrink:0; width:64px; height:64px;
+  border-radius:50%; background:var(--surface);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fraunces',serif; font-size:1.1rem; font-weight:900; color:var(--ink);
+  position:relative; z-index:1; box-shadow:var(--shadow-sm);
+  transition:background var(--t), border-color var(--t), color var(--t);
+}
+.tl-item:hover .tl-num { background:var(--grad); border-color:var(--accent); color:#fff; box-shadow:0 6px 20px rgba(220,32,32,.4); }
+.tl-content {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:22px 24px; flex:1;
+  box-shadow:var(--shadow-sm); transition:border-color var(--t), box-shadow var(--t), transform var(--t);
+}
+.tl-item:hover .tl-content { border-color:rgba(220,32,32,.25); box-shadow:var(--shadow); transform:translateX(4px); }
+.tl-content h3 { font-family:'Fraunces',serif; font-size:1.2rem; font-weight:700; margin-bottom:8px; color:var(--ink); }
+.tl-content p { font-size:.88rem; color:var(--ink3); line-height:1.6; margin-bottom:14px; }
+.tl-tools { display:flex; flex-wrap:wrap; gap:8px; }
+.tl-tools span { background:rgba(220,32,32,.07); border:1px solid rgba(220,32,32,.18); color:var(--accent); border-radius:20px; padding:3px 12px; font-size:.76rem; font-weight:600; display:flex; align-items:center; gap:5px; }
+
+/* ─── CERTIFICATE ─────────────────────────────────────────── */
+.section-cert { padding:100px 0; background:var(--bg); }
+.cert-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.cert-visual { display:flex; justify-content:center; }
+.cert-card {
+  width:320px; background:var(--surface); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg); border:1px solid var(--border); position:relative; overflow:hidden;
+  padding:40px 32px; text-align:center;
+  animation:float-card2 5s ease-in-out infinite alternate;
+}
+/* red top stripe on cert card */
+.cert-card::before { content:''; position:absolute; top:0; left:0; right:0; height:5px; background:var(--grad); }
+@keyframes float-card2 { from{transform:translateY(0) rotate(-1deg);} to{transform:translateY(-10px) rotate(-1deg);} }
+.cert-watermark { position:absolute; top:-20px; right:-20px; font-size:10rem; color:rgba(220,32,32,.05); pointer-events:none; }
+.cert-seal { font-size:3rem; color:var(--accent); margin-bottom:14px; }
+.cert-inner .cert-label { font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink3); margin-bottom:8px; }
+.cert-inner h3 { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:900; color:var(--ink); margin-bottom:8px; }
+.cert-name { font-size:.88rem; color:var(--ink3); margin-bottom:20px; }
+.cert-name em { color:var(--accent); font-style:normal; font-weight:600; }
+.cert-badges { display:flex; gap:8px; justify-content:center; }
+.cert-badges span { background:rgba(220,32,32,.08); border:1px solid rgba(220,32,32,.2); color:var(--accent); border-radius:20px; padding:4px 10px; font-size:.72rem; font-weight:600; }
+.cert-points { display:flex; flex-direction:column; gap:16px; margin-top:28px; }
+.cp-item { display:flex; align-items:flex-start; gap:14px; }
+.cp-num { flex-shrink:0; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:.9rem; font-weight:700; color:var(--accent); }
+.cp-item p { font-size:.9rem; color:var(--ink2); padding-top:9px; line-height:1.5; }
+
+/* ─── TESTIMONIALS ────────────────────────────────────────── */
+.section-testi { padding:100px 0; background:var(--bg2); overflow:hidden; }
+.testi-track {
+  display:flex; gap:20px; overflow:hidden; cursor:grab;
+}
+.testi-card {
+  flex:0 0 calc(33.33% - 14px); background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:32px 28px; box-shadow:var(--shadow-sm);
+  transition:border-color var(--t), box-shadow var(--t), transform var(--t);
+  user-select:none;
+}
+.testi-card:hover { border-color:rgba(220,32,32,.3); box-shadow:var(--shadow); transform:translateY(-4px); }
+.stars { color:var(--accent); font-size:.9rem; margin-bottom:14px; display:flex; gap:3px; }
+.testi-card p { font-size:.92rem; color:var(--ink2); line-height:1.7; margin-bottom:20px; font-style:italic; }
+.testi-author { display:flex; align-items:center; gap:12px; }
+.author-av { width:40px; height:40px; border-radius:50%; background:var(--grad); color:#fff; font-size:.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.testi-author strong { font-size:.9rem; color:var(--ink); }
+.testi-dots { display:flex; gap:8px; justify-content:center; margin-top:28px; }
+.tdot { width:8px; height:8px; border-radius:50%; background:var(--border); border:none; cursor:pointer; transition:background var(--t), transform var(--t); }
+.tdot.active { background:var(--accent); transform:scale(1.3); }
+
+/* ─── MENTORS ─────────────────────────────────────────────── */
+.section-mentors { padding:100px 0; background:var(--bg); }
+.mentors-grid { display:flex; flex-wrap:wrap; gap:28px; justify-content:center; }
+.mentor-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:40px 28px; width:300px;
+  text-align:center; box-shadow:var(--shadow-sm);
+  transition:transform var(--t), box-shadow var(--t), border-color var(--t);
+  position:relative; overflow:hidden;
+}
+.mentor-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--grad); transform:scaleX(0); transform-origin:left; transition:transform var(--t); }
+.mentor-card:hover::before { transform:scaleX(1); }
+.mentor-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-lg); border-color:rgba(220,32,32,.3); }
+.mentor-avatar {
+  width:90px; height:90px; border-radius:50%; margin:0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2rem; font-weight:800; color:#fff;
+  box-shadow:0 8px 24px rgba(220,32,32,0.2);
+  object-fit:cover;
+}
+.mentor-info h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.mentor-info p { font-size:.85rem; color:var(--ink3); margin-bottom:18px; }
+.mentor-tags { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:12px; }
+.mentor-tags span { background:rgba(220,32,32,.08); border:1px solid rgba(220,32,32,.18); color:var(--accent); border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:600; }
+.mentor-card h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:800; color:var(--ink); }
+
+/* ─── CTA ─────────────────────────────────────────────────── */
+.section-cta { padding:100px 0; background:var(--bg2); }
+.cta-box {
+  background:var(--ink); border-radius:28px; padding:80px 60px;
+  text-align:center; position:relative; overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  border:1px solid rgba(220,32,32,.2);
+}
+.cta-glow {
+  position:absolute; width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle, rgba(220,32,32,.2) 0%, transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+/* red top border on CTA */
+.cta-box::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--grad); }
+.cta-box h2 { font-family:'Fraunces',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:900; color:#fff; margin-bottom:16px; position:relative; }
+.cta-box p { color:rgba(255,255,255,.65); font-size:1.05rem; max-width:520px; margin:0 auto 40px; position:relative; }
+.cta-actions { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; position:relative; }
+.btn-white { display:inline-flex; align-items:center; gap:9px; padding:14px 30px; background:var(--grad); color:#fff; border-radius:40px; font-weight:700; font-size:.95rem; box-shadow:0 4px 18px rgba(220,32,32,0.5); transition:transform var(--t), box-shadow var(--t); }
+.btn-white:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(220,32,32,0.65); }
+.btn-outline-white { display:inline-flex; align-items:center; gap:9px; padding:14px 30px; background:transparent; color:rgba(255,255,255,.85); border:1.5px solid rgba(255,255,255,.25); border-radius:40px; font-weight:500; font-size:.95rem; transition:border-color var(--t), color var(--t), background var(--t); }
+.btn-outline-white:hover { border-color:rgba(255,255,255,.6); color:#fff; background:rgba(255,255,255,.07); }
+.cta-note { margin-top:24px; font-size:.8rem; color:rgba(255,255,255,.4); display:flex; align-items:center; gap:7px; justify-content:center; position:relative; }
+.cta-note i { color:var(--accent); }
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+footer { background:var(--ink); border-top:2px solid var(--accent); padding:64px 0 24px; }
+.footer-grid { display:flex; flex-wrap:wrap; gap:48px; margin-bottom:48px; }
+.footer-brand { max-width:280px; flex-shrink:0; }
+.footer-brand p { font-size:.85rem; color:rgba(255,255,255,.5); margin-top:14px; line-height:1.65; }
+.footer-brand .logo-mark { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.footer-brand .logo-text { color:#fff; }
+.footer-socials { display:flex; gap:14px; margin-top:20px; }
+.footer-socials a { color:rgba(255,255,255,.4); font-size:1.1rem; transition:color var(--t), transform var(--t); }
+.footer-socials a:hover { color:var(--accent); transform:translateY(-2px); }
+.footer-col h5 { font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:#fff; margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-col a { font-size:.88rem; color:rgba(255,255,255,.45); transition:color var(--t); }
+.footer-col a:hover { color:var(--accent); }
+.footer-bottom { text-align:center; font-size:.8rem; color:rgba(255,255,255,.3); border-top:1px solid rgba(255,255,255,.08); padding-top:20px; }
+
+/* ─── REVEAL ANIMATIONS ───────────────────────────────────── */
+.section-reveal { opacity:0; transform:translateY(40px); transition:opacity .8s ease, transform .8s ease; }
+.section-reveal.visible { opacity:1; transform:translateY(0); }
+
+.reveal-up { opacity:0; transform:translateY(28px); animation:none; }
+.reveal-up.fired { animation:reveal-rise .7s cubic-bezier(.22,1,.36,1) var(--d, 0s) forwards; }
+@keyframes reveal-rise { to { opacity:1; transform:translateY(0); } }
+
+.reveal-right { opacity:0; transform:translateX(40px); animation:none; }
+.reveal-right.fired { animation:reveal-right-anim .7s cubic-bezier(.22,1,.36,1) var(--d, 0s) forwards; }
+@keyframes reveal-right-anim { to { opacity:1; transform:translateX(0); } }
+
+/* ─── SCROLL PROGRESS ─────────────────────────────────────── */
+#scroll-prog {
+  position:fixed; top:0; left:0; height:3px;
+  background:var(--grad);
+  z-index:9990; transition:width .1s;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width:1000px) {
+  .projects-grid { grid-template-columns:repeat(2,1fr); }
+  .about-grid, .cert-grid { grid-template-columns:1fr; gap:48px; }
+  .cert-visual { order:-1; }
+}
+@media (max-width:768px) {
+  .hero-inner { flex-direction:column; gap:40px; }
+  .hero-visual { min-width:unset; width:100%; }
+  .hero-text { max-width:100%; }
+  .terminal-card { transform:rotate(0); }
+  .badge-k8s, .badge-deploy, .badge-aws { display:none; }
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+  .btn-cta { display:none; }
+  .projects-grid { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .culture-cards { grid-template-columns:1fr; }
+  .testi-card { flex:0 0 85%; }
+  .cta-box { padding:48px 24px; }
+  .timeline::before { left:24px; }
+  .tl-num { width:48px; height:48px; font-size:.9rem; }
+  .hero::before { display:none; }
+}
+  </style>
+</head>
+<body>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <div class="noise-overlay"></div>
+  <div id="scroll-prog"></div>
+
+  <nav id="navbar">
+    <a href="#" class="logo"><img src="logo (1).png" alt="SCALive Logo" class="logo-mark" height="40px" /></a>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link active">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#projects" class="nav-link">Projects</a></li>
+      <li><a href="#curriculum" class="nav-link">Curriculum</a></li>
+      <li><a href="#mentors" class="nav-link">Mentors</a></li>
+    </ul>
+    <a href="#enroll" class="btn-cta">Register Now <i class="fa-solid fa-arrow-right"></i></a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" class="mob-link">Home</a>
+    <a href="#about" class="mob-link">About</a>
+    <a href="#projects" class="mob-link">Projects</a>
+    <a href="#curriculum" class="mob-link">Curriculum</a>
+    <a href="#mentors" class="mob-link">Mentors</a>
+    <a href="#enroll" class="btn-cta" style="margin-top:20px;">Register Now</a>
+  </div>
+
+  <section id="home" class="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+    <div class="hero-blob blob-3"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="badge-pill reveal-up" style="--d:0s"><span class="badge-dot"></span>Cohort 3 — Now Enrolling</div>
+        <h1 class="hero-h1 reveal-up" style="--d:0.1s">Build Real<br><em>DevOps</em><br>Infrastructure.</h1>
+        <p class="hero-sub reveal-up" style="--d:0.2s">Linux, Docker, Kubernetes, CI/CD, Terraform, AWS — structured live program for engineers who want to ship at scale and land top offers.</p>
+        <div class="hero-actions reveal-up" style="--d:0.3s">
+          <a href="#projects" class="btn-primary">Explore Projects <i class="fa-solid fa-arrow-right"></i></a>
+          <a href="#curriculum" class="btn-ghost">View Syllabus</a>
+        </div>
+        <div class="hero-trust reveal-up" style="--d:0.4s">
+          <div class="trust-item"><strong>300+</strong><span>Live Hours</span></div>
+          <div class="trust-sep"></div>
+          <div class="trust-item"><strong>6</strong><span>Real Projects</span></div>
+          <div class="trust-sep"></div>
+          <div class="trust-item"><strong>500+</strong><span>Hiring Partners</span></div>
+        </div>
+      </div>
+      <div class="hero-visual reveal-right" style="--d:0.2s">
+        <div class="terminal-card">
+          <div class="terminal-header">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="terminal-title">deploy.sh</span>
+          </div>
+          <div class="terminal-body" id="terminal-body">
+            <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd typed-terminal"></span><span class="t-cursor">|</span></div>
+          </div>
+        </div>
+        <div class="floating-badge badge-k8s"><i class="fa-solid fa-dharmachakra"></i><span>K8s Cluster Live</span><span class="pulse-dot"></span></div>
+        <div class="floating-badge badge-deploy"><i class="fa-solid fa-check-circle"></i><span>Deploy Successful</span></div>
+        <div class="floating-badge badge-aws"><i class="fa-brands fa-aws"></i><span>AWS EKS Running</span></div>
+      </div>
+    </div>
+    <div class="scroll-indicator"><span>Scroll</span><div class="scroll-line"></div></div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Linux</span><span class="dot-sep">·</span><span>Docker</span><span class="dot-sep">·</span><span>Kubernetes</span><span class="dot-sep">·</span><span>Terraform</span><span class="dot-sep">·</span><span>AWS EKS</span><span class="dot-sep">·</span><span>Jenkins</span><span class="dot-sep">·</span><span>GitLab CI</span><span class="dot-sep">·</span><span>Prometheus</span><span class="dot-sep">·</span><span>Grafana</span><span class="dot-sep">·</span><span>ArgoCD</span><span class="dot-sep">·</span><span>Helm</span><span class="dot-sep">·</span><span>Vault</span><span class="dot-sep">·</span>
+      <span>Linux</span><span class="dot-sep">·</span><span>Docker</span><span class="dot-sep">·</span><span>Kubernetes</span><span class="dot-sep">·</span><span>Terraform</span><span class="dot-sep">·</span><span>AWS EKS</span><span class="dot-sep">·</span><span>Jenkins</span><span class="dot-sep">·</span><span>GitLab CI</span><span class="dot-sep">·</span><span>Prometheus</span><span class="dot-sep">·</span><span>Grafana</span><span class="dot-sep">·</span><span>ArgoCD</span><span class="dot-sep">·</span><span>Helm</span><span class="dot-sep">·</span><span>Vault</span><span class="dot-sep">·</span>
+    </div>
+  </div>
+
+  <section class="section-demo section-reveal">
+    <div class="container" style="text-align:center">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-h2">See exactly how the program runs.</h2>
+      <p class="section-sub">A real classroom session — from server provisioning to Kubernetes deployment. No edits. No shortcuts.</p>
+      <div class="video-wrapper">
+        <div class="video-inner">
+          <div class="video-overlay">
+            <button class="play-btn" id="playBtn"><i class="fa-solid fa-play"></i></button>
+            <p>Watch Live Session · Deploying EKS Clusters</p>
+          </div>
+          <div class="video-grid-lines"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section-about section-reveal">
+    <div class="container about-grid">
+      <div class="about-left">
+        <div class="section-label">The Program</div>
+        <h2 class="section-h2" style="text-align:left;max-width:420px;">Start strong.<br>Stay consistent.<br>Become career-ready.</h2>
+        <p class="section-sub" style="text-align:left;margin-left:0;">You won't just follow along. You'll build full systems — the kind you can actually talk about in interviews and ship in production.</p>
+        <ul class="feature-list">
+          <li><span class="feat-icon"><i class="fa-solid fa-circle-check"></i></span>300+ hours of live classes with recordings and clear session notes</li>
+          <li><span class="feat-icon"><i class="fa-solid fa-circle-check"></i></span>Structured roadmap across Linux, Docker, K8s, CI/CD, Terraform, and AWS</li>
+          <li><span class="feat-icon"><i class="fa-solid fa-circle-check"></i></span>Weekly assignments and project sprints with mentor code reviews</li>
+          <li><span class="feat-icon"><i class="fa-solid fa-circle-check"></i></span>Doubt solving with the team groups</li>
+          <li><span class="feat-icon"><i class="fa-solid fa-circle-check"></i></span>Resume updates, mock interviews, and placement guidance till your first role</li>
+        </ul>
+        <a href="#enroll" class="btn-primary" style="margin-top:10px;">Register Now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="about-right">
+        <div class="stats-grid">
+          <div class="stat-box" data-target="300" data-suffix="+"><div class="stat-val"><span class="counter">0</span><span class="stat-suf">+</span></div><div class="stat-lab">Hours of Live Sessions</div></div>
+          <div class="stat-box" data-target="6" data-suffix=""><div class="stat-val"><span class="counter">0</span></div><div class="stat-lab">Portfolio-grade Builds</div></div>
+          <div class="stat-box highlight-stat" data-target="500" data-suffix="+"><div class="stat-val"><span class="counter">0</span><span class="stat-suf">+</span></div><div class="stat-lab">Partner Companies Hiring</div></div>
+        </div>
+        <div class="culture-cards">
+          <div class="culture-card cc-hover"><div class="cc-icon"><i class="fa-solid fa-people-group"></i></div><h4>Team-room culture</h4><p>Work in small teams, review each other's PRs, and build like a real engineering team.</p></div>
+          <div class="culture-card cc-hover"><div class="cc-icon"><i class="fa-solid fa-code-pull-request"></i></div><h4>Mentor reviews</h4><p>Experienced engineers review your code and challenge your design decisions.</p></div>
+          <div class="culture-card cc-hover"><div class="cc-icon"><i class="fa-solid fa-briefcase"></i></div><h4>Internship track</h4><p>Top performers move into paid internships with partner startups.</p></div>
+          <div class="culture-card cc-hover"><div class="cc-icon"><i class="fa-solid fa-rocket"></i></div><h4>Real products</h4><p>Ship internal tools and public infrastructure used by real applications.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section-projects section-reveal">
+    <div class="container">
+      <div class="section-label">Portfolio</div>
+      <h2 class="section-h2">Projects that help you get hired.</h2>
+      <p class="section-sub">Six portfolio-grade builds. Each one solves a real problem, runs on real infra, and earns a real spot on your resume.</p>
+      <div class="projects-grid">
+        <div class="proj-card pc-hover" data-index="01"><div class="proj-tag">Microservices &amp; Kubernetes</div><h3>E-Commerce K8s Cluster</h3><p>Deploy a 10-tier microservices application on an AWS EKS cluster with auto-scaling and load balancing.</p><div class="proj-footer"><span class="tech-pill">EKS</span><span class="tech-pill">K8s</span><span class="tech-pill">AWS</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+        <div class="proj-card pc-hover" data-index="02"><div class="proj-tag">Jenkins, GitLab &amp; ArgoCD</div><h3>Zero-Downtime CI/CD</h3><p>Build an enterprise CI/CD pipeline triggering automated testing and deploying via GitOps to production.</p><div class="proj-footer"><span class="tech-pill">Jenkins</span><span class="tech-pill">GitOps</span><span class="tech-pill">ArgoCD</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+        <div class="proj-card pc-hover" data-index="03"><div class="proj-tag">Terraform &amp; AWS</div><h3>Global Infra via Code</h3><p>Provision VPCs, EC2 instances, RDS databases, and S3 buckets across multiple regions automatically.</p><div class="proj-footer"><span class="tech-pill">Terraform</span><span class="tech-pill">VPC</span><span class="tech-pill">RDS</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+        <div class="proj-card pc-hover" data-index="04"><div class="proj-tag">Prometheus, Grafana &amp; ELK</div><h3>Observability Stack</h3><p>Implement comprehensive monitoring, alerting, and log aggregation for a distributed microservices architecture.</p><div class="proj-footer"><span class="tech-pill">Grafana</span><span class="tech-pill">ELK</span><span class="tech-pill">Alerts</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+        <div class="proj-card pc-hover" data-index="05"><div class="proj-tag">AWS Lambda &amp; DynamoDB</div><h3>Serverless Data Pipeline</h3><p>Create event-driven serverless architectures to process data streams with zero operational overhead.</p><div class="proj-footer"><span class="tech-pill">Lambda</span><span class="tech-pill">DynamoDB</span><span class="tech-pill">Events</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+        <div class="proj-card pc-hover" data-index="06"><div class="proj-tag">IAM, Vault &amp; Security Groups</div><h3>Secure Cloud Environment</h3><p>Design a zero-trust network architecture managing secrets, roles, and compliance in AWS.</p><div class="proj-footer"><span class="tech-pill">IAM</span><span class="tech-pill">Vault</span><span class="tech-pill">Zero-Trust</span><i class="fa-solid fa-arrow-up-right proj-arrow"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="curriculum" class="section-curriculum section-reveal">
+    <div class="container">
+      <div class="section-label">Curriculum</div>
+      <h2 class="section-h2">The program, section by section.</h2>
+      <p class="section-sub">Master the entire pipeline from code to production. Built for engineers who want to ship at scale.</p>
+      <div class="timeline">
+        <div class="tl-item tl-reveal"><div class="tl-num">01</div><div class="tl-content"><h3>Linux &amp; Scripting</h3><p>Master the terminal. System administration, networking fundamentals, and automation scripts for servers.</p><div class="tl-tools"><span><i class="fa-brands fa-linux"></i> Linux</span><span><i class="fa-solid fa-terminal"></i> Bash</span><span><i class="fa-brands fa-git-alt"></i> Git</span></div></div></div>
+        <div class="tl-item tl-reveal"><div class="tl-num">02</div><div class="tl-content"><h3>Docker Containerization</h3><p>Containerize apps end-to-end. Master volumes, networks, multi-stage builds, and Docker Compose stacks.</p><div class="tl-tools"><span><i class="fa-brands fa-docker"></i> Docker</span><span><i class="fa-solid fa-cubes"></i> Compose</span></div></div></div>
+        <div class="tl-item tl-reveal"><div class="tl-num">03</div><div class="tl-content"><h3>Kubernetes Orchestration</h3><p>Scale apps at any size. Master Pods, Deployments, Services, Ingress, RBAC, and production-grade K8s.</p><div class="tl-tools"><span><i class="fa-solid fa-dharmachakra"></i> Kubernetes</span><span><i class="fa-solid fa-ship"></i> Helm</span></div></div></div>
+        <div class="tl-item tl-reveal"><div class="tl-num">04</div><div class="tl-content"><h3>CI/CD Integration</h3><p>Continuous Integration and Delivery pipelines triggering automated deployments to Kubernetes clusters via GitOps.</p><div class="tl-tools"><span><i class="fa-brands fa-jenkins"></i> Jenkins</span><span><i class="fa-brands fa-gitlab"></i> GitLab CI</span><span><i class="fa-solid fa-robot"></i> GitHub Actions</span></div></div></div>
+        <div class="tl-item tl-reveal"><div class="tl-num">05</div><div class="tl-content"><h3>AWS &amp; Infrastructure as Code</h3><p>Architect highly available systems and provision resilient multi-region infrastructure using Terraform and CloudFormation.</p><div class="tl-tools"><span><i class="fa-brands fa-aws"></i> AWS</span><span><i class="fa-solid fa-layer-group"></i> Terraform</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-cert section-reveal">
+    <div class="container cert-grid">
+      <div class="cert-visual">
+        <div class="cert-card">
+          <div class="cert-watermark"><i class="fa-solid fa-certificate"></i></div>
+          <div class="cert-inner">
+            <div class="cert-seal"><i class="fa-solid fa-award"></i></div>
+            <p class="cert-label">Certificate of Completion</p>
+            <h3>DevOps Engineering</h3>
+            <p class="cert-name">Issued to <em>Your Name Here</em></p>
+            <div class="cert-badges"><span>Blockchain Verified</span><span>Mentor Signed</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cert-text">
+        <div class="section-label">Certification</div>
+        <h2 class="section-h2" style="text-align:left;max-width:460px;">Earn a certificate that actually means something.</h2>
+        <p class="section-sub" style="text-align:left;margin-left:0;">Finish all modules, ship your capstone project, and clear the mock interview panel — then it's earned.</p>
+        <div class="cert-points">
+          <div class="cp-item"><div class="cp-num">01</div><p>Blockchain-verifiable certificate, easy to share on LinkedIn</p></div>
+          <div class="cp-item"><div class="cp-num">02</div><p>Signed by your mentors, not an anonymous organization</p></div>
+          <div class="cp-item"><div class="cp-num">03</div><p>Access to alumni hiring network and exclusive opportunities</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-testi section-reveal">
+    <div class="container">
+      <div class="section-label">Student Feedback</div>
+      <h2 class="section-h2">We help smart developers work better.</h2>
+      <p class="section-sub">Straight student feedback from our Batch, kept simple and honest.</p>
+      <div class="testi-track" id="testiTrack">
+        <div class="testi-card"><div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p>"The way concepts are broken down step by step makes even tough Kubernetes topics easy. Always feel supported and never lost in class."</p><div class="testi-author"><div class="author-av">RS</div><strong>Rahul S.</strong></div></div>
+        <div class="testi-card"><div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p>"Project-based approach is what makes this different. You understand the concept instead of just memorizing it. Dedication of the faculty is truly commendable."</p><div class="testi-author"><div class="author-av">PK</div><strong>Priya K.</strong></div></div>
+        <div class="testi-card"><div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p>"Already learning industry-standard CI/CD and Terraform patterns. The structure of this cohort is unlike anything else I've tried."</p><div class="testi-author"><div class="author-av">AT</div><strong>Amit T.</strong></div></div>
+        <div class="testi-card"><div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p>"From zero to deploying EKS clusters in 3 months. The mentors genuinely care about your growth and push you beyond your comfort zone."</p><div class="testi-author"><div class="author-av">NS</div><strong>Neha S.</strong></div></div>
+      </div>
+      <div class="testi-dots" id="testiDots">
+        <button class="tdot active" data-i="0"></button><button class="tdot" data-i="1"></button><button class="tdot" data-i="2"></button><button class="tdot" data-i="3"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="mentors" class="section-mentors section-reveal">
+    <div class="container">
+      <div class="section-label">Your Guides</div>
+      <h2 class="section-h2">Your Guide, Our Inspiration.</h2>
+      <p class="section-sub">Your mentors aren't retired career-coaches. They ship every week, debug at 2 AM, and will pull up your repo live.</p>
+      <div class="mentors-grid">
+        <div class="mentor-card mc-hover">
+          <img class="mentor-avatar" src="WhatsApp Image 2026-05-02 at 12.49.16 AM.jpeg" alt="Sachin Kapoor">
+          <div class="mentor-info"><h3>Sachin Kapoor</h3></div>
+        </div>
+        <div class="mentor-card mc-hover">
+          <img class="mentor-avatar" src="WhatsApp Image 2026-05-02 at 12.43.03 AM.jpeg" alt="Udit Namdev">
+          <div class="mentor-info"><h3>Udit Namdev</h3></div>
+        </div>
+        <div class="mentor-card mc-hover">
+          <img class="mentor-avatar" src="WhatsApp Image 2026-05-02 at 9.55.16 AM (1).jpeg" alt="Faizan Ali">
+          <div class="mentor-info"><h3>Faizan Ali</h3></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="enroll" class="section-cta section-reveal">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-glow"></div>
+        <div class="section-label" style="color:#fff;border-color:rgba(220,32,32,0.5);background:rgba(220,32,32,0.15)">Get Started</div>
+        <h2>Get your first dream job now.</h2>
+        <p>Ready to build something real? Seats close fast. Grab yours, meet your mentors, ship your first scalable product.</p>
+        <div class="cta-actions">
+          <a href="#" class="btn-white">Register Now <i class="fa-solid fa-paper-plane"></i></a>
+          <a href="#curriculum" class="btn-outline-white">View Curriculum</a>
+        </div>
+        <div class="cta-note"><i class="fa-solid fa-shield-halved"></i> Limited seats per batch · Money-back guarantee</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">SC</span><span class="logo-text">ALive</span></a>
+        <p>A 6-month live program for engineers who are tired of being "learners." Build real products. Ship to real users. Land real offers.</p>
+        <div class="footer-socials">
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-github"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col"><h5>SCALive</h5><ul><li><a href="#">About Us</a></li><li><a href="#">Hire From Us</a></li><li><a href="#">Pricing &amp; Refund</a></li><li><a href="#">Jobs</a></li></ul></div>
+      <div class="footer-col"><h5>Support</h5><ul><li><a href="mailto:info@scalive.in">info@scalive.in</a></li><li><a href="tel:+918827666109">+91 88276 66109</a></li><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 SCALive Coaching Center · Sector-A, Indrapuri, Bhopal (MP). All rights reserved.</p></div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ─── CURSOR ─────────────────────────────────────────── */
+  const dot  = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  (function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  document.querySelectorAll('a, button, .pc-hover, .cc-hover, .mc-hover, .testi-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { dot.classList.add('active'); ring.classList.add('active'); });
+    el.addEventListener('mouseleave', () => { dot.classList.remove('active'); ring.classList.remove('active'); });
+  });
+
+  /* ─── NAV SCROLL ─────────────────────────────────────── */
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ─── HAMBURGER ──────────────────────────────────────── */
+  const ham  = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  ham.addEventListener('click', () => menu.classList.toggle('open'));
+  document.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => menu.classList.remove('open')));
+
+  /* ─── HERO CANVAS PARTICLES ─────────────────────────── */
+  const canvas = document.getElementById('hero-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r  = Math.random() * 2 + 1;
+      this.a  = Math.random() * 0.25 + 0.08;
+      this.c  = Math.random() > 0.5
+        ? `rgba(220,32,32,${this.a})`
+        : `rgba(255,68,68,${this.a})`;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W) this.vx *= -1;
+      if (this.y < 0 || this.y > H) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.c; ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = Array.from({ length: Math.min(Math.floor(W / 12), 80) }, () => new Particle());
+  }
+  initParticles();
+
+  function animateCanvas() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach((p, i) => {
+      p.update(); p.draw();
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(220,32,32,${0.07 * (1 - dist / 100)})`;
+          ctx.lineWidth = 0.6;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    });
+    requestAnimationFrame(animateCanvas);
+  }
+  animateCanvas();
+
+  /* ─── TERMINAL TYPING ───────────────────────────────── */
+  const cmdEl = document.querySelector('.typed-terminal');
+  const logEl = document.querySelector('.terminal-body');
+  const sequences = [
+    { cmd: 'kubectl get pods -n production', delay: 1800, logs: [
+      { t: 'info', m: 'NAME                     READY   STATUS    RESTARTS', delay: 300 },
+      { t: 'ok',   m: 'api-server-7f9d8b-xk2p  1/1     Running   0', delay: 600 },
+      { t: 'ok',   m: 'frontend-5c8b9d-m3ln   1/1     Running   0', delay: 900 },
+      { t: 'ok',   m: 'db-primary-6d7f-qr9s   1/1     Running   0', delay: 1200 },
+    ]},
+    { cmd: 'terraform apply --auto-approve', delay: 2000, logs: [
+      { t: 'info', m: '▶ Plan: 3 to add, 1 to change, 0 to destroy', delay: 300 },
+      { t: 'ok',   m: '✓ aws_vpc.main created in 2.3s', delay: 700 },
+      { t: 'ok',   m: '✓ aws_eks_cluster.prod created in 8.1s', delay: 1200 },
+      { t: 'ok',   m: '✓ Apply complete! Resources: 3 added.', delay: 1500 },
+    ]},
+    { cmd: 'docker build -t app:v1.4.2 .', delay: 1800, logs: [
+      { t: 'info', m: '[1/4] FROM node:20-alpine', delay: 300 },
+      { t: 'info', m: '[2/4] COPY package.json .', delay: 600 },
+      { t: 'info', m: '[3/4] RUN npm install --production', delay: 900 },
+      { t: 'ok',   m: '✓ Successfully built a8f9c3d2e1b0', delay: 1300 },
+    ]},
+  ];
+  let seqIdx = 0;
+
+  function typeCmd(seq) {
+    const cmd = seq.cmd;
+    let i = 0;
+    cmdEl.textContent = '';
+    document.querySelectorAll('.terminal-log').forEach(el => el.remove());
+
+    const typing = setInterval(() => {
+      cmdEl.textContent = cmd.substring(0, ++i);
+      if (i === cmd.length) {
+        clearInterval(typing);
+        const logDiv = document.createElement('div');
+        logDiv.className = 'terminal-log';
+        logEl.appendChild(logDiv);
+
+        seq.logs.forEach(({ t, m, delay }) => {
+          setTimeout(() => {
+            const line = document.createElement('div');
+            line.className = `tl ${t}`;
+            line.textContent = m;
+            logDiv.appendChild(line);
+            logEl.scrollTop = logEl.scrollHeight;
+          }, delay);
+        });
+
+        setTimeout(() => {
+          seqIdx = (seqIdx + 1) % sequences.length;
+          typeCmd(sequences[seqIdx]);
+        }, seq.delay + 1800);
+      }
+    }, 55);
+  }
+  setTimeout(() => typeCmd(sequences[0]), 1000);
+
+  /* ─── HERO ENTRY ANIMATIONS ─────────────────────────── */
+  document.querySelectorAll('.reveal-up, .reveal-right').forEach(el => {
+    setTimeout(() => el.classList.add('fired'), 100);
+  });
+
+  /* ─── SECTION REVEAL ─────────────────────────────────── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.section-reveal').forEach(el => io.observe(el));
+
+  /* timeline items */
+  const ioTL = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.style.transitionDelay = entry.target.dataset.delay || '0s';
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.tl-reveal').forEach((el, i) => {
+    el.dataset.delay = `${i * 0.1}s`;
+    ioTL.observe(el);
+  });
+
+  /* ─── COUNTER ANIMATION ─────────────────────────────── */
+  const ioCount = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const box    = entry.target;
+      const target = +box.dataset.target;
+      const numEl  = box.querySelector('.counter');
+      let start = 0;
+      const dur = 1800;
+      const step = (ts) => {
+        if (!start) start = ts;
+        const prog = Math.min((ts - start) / dur, 1);
+        const ease = 1 - Math.pow(1 - prog, 3);
+        numEl.textContent = Math.floor(ease * target);
+        if (prog < 1) requestAnimationFrame(step);
+        else numEl.textContent = target;
+      };
+      requestAnimationFrame(step);
+      ioCount.unobserve(box);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat-box[data-target]').forEach(el => ioCount.observe(el));
+
+  /* ─── ACTIVE NAV LINK ────────────────────────────────── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) cur = s.id; });
+    navLinks.forEach(l => {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+    });
+  });
+
+  /* ─── TESTIMONIAL SLIDER ─────────────────────────────── */
+  const track = document.getElementById('testiTrack');
+  const dots  = document.querySelectorAll('.tdot');
+  let curSlide = 0, isDragging = false, startX = 0, scrollLeft = 0;
+
+  function goTo(n) {
+    curSlide = n;
+    const cardW = track.children[0].offsetWidth + 20;
+    track.scrollTo({ left: cardW * n, behavior: 'smooth' });
+    dots.forEach((d, i) => d.classList.toggle('active', i === n));
+  }
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+  setInterval(() => goTo((curSlide + 1) % track.children.length), 4500);
+  track.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX; scrollLeft = track.scrollLeft; track.style.cursor = 'grabbing'; });
+  track.addEventListener('mousemove', e => { if (!isDragging) return; track.scrollLeft = scrollLeft - (e.pageX - startX); });
+  track.addEventListener('mouseup', () => { isDragging = false; track.style.cursor = 'grab'; });
+
+  /* ─── PLAY BUTTON ────────────────────────────────────── */
+  const playBtn = document.getElementById('playBtn');
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    });
+  }
+
+  /* ─── CARD HOVER TILT ────────────────────────────────── */
+  document.querySelectorAll('.proj-card, .culture-card, .mentor-card, .testi-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width  - 0.5;
+      const y = (e.clientY - rect.top)  / rect.height - 0.5;
+      card.style.transform = `translateY(-6px) perspective(600px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
+  /* ─── TIMELINE STAGGER ───────────────────────────────── */
+  document.querySelectorAll('.tl-item').forEach((item, i) => {
+    item.style.transitionDelay = `${i * 0.12}s`;
+  });
+
+  /* ─── SCROLL PROGRESS ────────────────────────────────── */
+  const prog = document.getElementById('scroll-prog');
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    prog.style.width = pct + '%';
+  });
+
+});
+  </script>
+</body>
+</html>
